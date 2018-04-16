@@ -1,0 +1,11 @@
+package: github.com/cloudautomationsolutions/divvy-up
+import:
+- package: github.com/aws/aws-sdk-go
+  version: ^1.13.32
+  subpackages:
+  - aws
+  - aws/session
+  - service/s3
+  - service/s3/s3manager
+- package: github.com/urfave/cli
+  version: ^1.20.0
