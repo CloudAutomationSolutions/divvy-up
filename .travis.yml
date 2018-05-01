@@ -1,0 +1,11 @@
+language: go
+
+before_install:
+  - mv ../../CloudAutomationSolutions ../../cloudautomationsolutions
+  - go get -u github.com/Masterminds/glide
+  - glide install --strip-vendor
+
+script: go test ./... && go build cmd/main.go
+
+go:
+  - "1.9.4"
