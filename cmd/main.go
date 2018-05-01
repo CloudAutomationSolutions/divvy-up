@@ -12,9 +12,8 @@ import (
 )
 
 var (
-	crash = log.Fatal
-	echo  = fmt.Print
-	exit  = os.Exit
+	echo = fmt.Printf
+	exit = os.Exit
 
 	// Version is the semantic version (added at compile time)
 	Version string
@@ -46,12 +45,13 @@ func handler(action string, c *cli.Context) {
 	switch action {
 	case "distribute":
 		crashIfContextMissingFlags(c, []string{"file", "expiration"})
-		backend.Distribute()
+		url := backend.Distribute(c.String("file"))
+		echo("Access your file at: %s", url)
 	case "bootstrap":
 		crashIfContextMissingFlags(c, []string{"method"})
 		backend.Bootstrap()
 	default:
-		crash("Unsupported action: ", action)
+		log.Fatal("Unsupported action: ", action)
 	}
 }
 
@@ -64,7 +64,7 @@ func backendFromContext(c *cli.Context) provider.Backend {
 	case "amazon":
 		backend = amazonBackendFromContext(c)
 	default:
-		crash("Unsupported provider backend: ", backendFlag)
+		log.Fatal("Unsupported provider backend: ", backendFlag)
 	}
 
 	return backend
@@ -88,7 +88,7 @@ func crashIfContextMissingFlags(c *cli.Context, flags []string) {
 		}
 	}
 	if len(missing) > 0 {
-		crash("Missing mandatory flags(s): ", strings.Join(missing, ", "))
+		log.Fatal("Missing mandatory flags(s): ", strings.Join(missing, ", "))
 	}
 }
 
@@ -119,7 +119,7 @@ var cliCommands = []cli.Command{
 
 var globalFlags = []cli.Flag{
 	cli.StringFlag{
-		Name:   "backend",
+		Name:   "backend, b",
 		Usage:  "the backend to be used for hosting and delivering the secret file",
 		Value:  "amazon",
 		EnvVar: "DIVVY_BACKEND",

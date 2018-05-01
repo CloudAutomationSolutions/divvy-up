@@ -9,3 +9,5 @@ import:
   - service/s3/s3manager
 - package: github.com/urfave/cli
   version: ^1.20.0
+- package: github.com/rs/xid
+  version: ^v1.1
