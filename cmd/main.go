@@ -12,7 +12,6 @@ import (
 )
 
 var (
-	echo = fmt.Printf
 	exit = os.Exit
 
 	// Version is the semantic version (added at compile time)
@@ -46,7 +45,7 @@ func handler(action string, c *cli.Context) {
 	case "distribute":
 		crashIfContextMissingFlags(c, []string{"file", "expiration"})
 		url := backend.Distribute(c.String("file"))
-		echo("Access your file at: %s", url)
+		fmt.Printf("Access your file at: %s", url)
 	case "bootstrap":
 		crashIfContextMissingFlags(c, []string{"method"})
 		backend.Bootstrap()
