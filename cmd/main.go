@@ -48,7 +48,7 @@ func handler(action string, c *cli.Context) {
 		fmt.Printf("Access your file at: %s", url)
 	case "bootstrap":
 		crashIfContextMissingFlags(c, []string{"method"})
-		backend.Bootstrap()
+		backend.Bootstrap(c.String("parameters"))
 	default:
 		log.Fatal("Unsupported action: ", action)
 	}
@@ -60,6 +60,7 @@ func backendFromContext(c *cli.Context) provider.Backend {
 
 	backendFlag := strings.ToLower(c.GlobalString("backend"))
 	switch backendFlag {
+	// TODO: Add support for kubernetes and gcloud
 	case "amazon":
 		backend = amazonBackendFromContext(c)
 	default:
@@ -71,7 +72,7 @@ func backendFromContext(c *cli.Context) provider.Backend {
 
 func amazonBackendFromContext(c *cli.Context) provider.Backend {
 	crashIfContextMissingFlags(c, []string{"amazon-bucket", "amazon-region"})
-	return provider.Backend(provider.NewAmazonS3Backend(
+	return provider.Backend(provider.NewAmazonBackend(
 		c.GlobalString("amazon-bucket"),
 		c.GlobalString("amazon-region"),
 		c.GlobalString("amazon-prefix"),
@@ -119,7 +120,7 @@ var cliCommands = []cli.Command{
 var globalFlags = []cli.Flag{
 	cli.StringFlag{
 		Name:   "backend, b",
-		Usage:  "the backend to be used for hosting and delivering the secret file",
+		Usage:  "the backend to be used for hosting and delivering the secret file [amazon, gcloud, kubernetes]",
 		Value:  "amazon",
 		EnvVar: "DIVVY_BACKEND",
 	},
@@ -146,10 +147,15 @@ var globalFlags = []cli.Flag{
 }
 
 var bootstrapFlags = []cli.Flag{
+	//	cli.StringFlag{
+	//		Name:  "method",
+	//		Usage: "The method used to provision the divvy-up application backend [cloudformation, heat, gdm]",
+	//	},
+	// Commenting this out for now. the provisioning method should be dependent on the cloud provider
+	// TODO: These should be standardised after we find out exactly what we need. Or maybe it should become a path to a file
 	cli.StringFlag{
-		Name:  "method",
-		Value: "cloudformation",
-		Usage: "The file which holds your secrets",
+		Name:  "parameters",
+		Usage: "These are key value pairs necessary for provisioning the backend provided in yaml format",
 	},
 }
 
