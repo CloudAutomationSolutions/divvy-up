@@ -5,7 +5,7 @@ before_install:
   - go get -u github.com/Masterminds/glide
   - glide install --strip-vendor
 
-script: go test ./... && go build cmd/main.go
+script: go test ./... && go build .
 
 go:
-  - "1.9.4"
+  - "1.10"
