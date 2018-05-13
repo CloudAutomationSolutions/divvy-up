@@ -88,7 +88,7 @@ func (b *AmazonBackend) Bootstrap(userSpecifiedParametersLocation string) {
 		resp, err := b.CFNClient.CreateStack(params)
 		if err != nil {
 			// TODO: Evaluate need to print code
-			log.Fatalf("Error occurred: %s", err.Error)
+			log.Fatalf("Error occurred: %s", err.Error())
 		}
 		log.Printf("The output from stack creation:\n%v", resp)
 	}
