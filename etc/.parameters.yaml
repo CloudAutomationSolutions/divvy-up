@@ -1,0 +1,5 @@
+---
+- file: https://raw.githubusercontent.com/CloudAutomationSolutions/divvy-up/master/bootstrap-manifests/aws/cfn-template.yaml
+  parameters:
+  - key: FunctionNameBase
+    value: divvy-up-backend
