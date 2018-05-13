@@ -1,10 +1,13 @@
 package provider
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/spf13/viper"
 
 	"gopkg.in/yaml.v2"
 )
@@ -32,10 +35,6 @@ type (
 		BoottrapParameters []BootstrapParameterElement `yaml:"parameters"`
 	}
 )
-
-func cleanPrefix(prefix string) string {
-	return strings.Trim(prefix, "/")
-}
 
 // to be used for local files only
 func readFile(filePath string) []byte {
@@ -74,4 +73,23 @@ func getUserSpecifiedBootstrapConfig(filePath string) []BootstrapConfig {
 	yaml.Unmarshal(contents, &userParameters)
 
 	return userParameters
+}
+
+func crashIfMissingFlags(v *viper.Viper, flags []string) {
+	missing := []string{}
+	for _, flag := range flags {
+		if !v.IsSet(flag) {
+			missing = append(missing, fmt.Sprintf("%s", flag))
+		}
+	}
+	if len(missing) > 0 {
+		log.Fatal("Missing mandatory config field(s): ", strings.Join(missing, ", "))
+	}
+}
+
+func crashIfMissingSection(section string) {
+	if !viper.IsSet(section) {
+		log.Fatal("Missing configuration section for backend: ", section)
+	}
+
 }
