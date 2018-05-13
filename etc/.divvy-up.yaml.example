@@ -1,0 +1,5 @@
+amazon:
+  bucket: "divvy-up"
+  region: "eu-central-1"
+  prefix: ""
+  endpoint: ""

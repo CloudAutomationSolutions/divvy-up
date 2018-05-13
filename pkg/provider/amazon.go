@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"path"
 	"strconv"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -48,7 +49,7 @@ func NewAmazonBackend(bucket string, prefix string, region string, endpoint stri
 		Bucket:    bucket,
 		S3Client:  s3Client,
 		CFNClient: cfnClient,
-		Prefix:    cleanPrefix(prefix),
+		Prefix:    strings.Trim(prefix, "/"),
 		Uploader:  s3manager.NewUploaderWithClient(s3Client),
 	}
 	return b
@@ -87,7 +88,7 @@ func (b *AmazonBackend) Bootstrap(userSpecifiedParametersLocation string) {
 		resp, err := b.CFNClient.CreateStack(params)
 		if err != nil {
 			// TODO: Evaluate need to print code
-			log.Fatalf("Error occurred: %s", err.Error)
+			log.Fatalf("Error occurred: %s", err.Error())
 		}
 		log.Printf("The output from stack creation:\n%v", resp)
 	}
